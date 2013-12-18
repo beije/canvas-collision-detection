@@ -2,6 +2,7 @@
 	"use strict";
 	
 	var CollisionDetector = namespace('CollisionDetection.Handlers.CollisionDetector')
+	var ColorPicker = namespace('CollisionDetection.Handlers.ColorPicker')
 
 	// Get our prefixed cancelAnimationFrame function
 	var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame ||
@@ -13,14 +14,17 @@
 
 	App.Painter = function(canvas) {
 		this.canvasSelector = '';
+		this.colorPicker = null;
 		this.context = null;
 		this.raf = null;
 		this.currentRenderFrame = 0;
 		this.finishedFrameCallbacks = [];
 		this.preFrameCallbacks = [];
 		this.renderQueue = [];
+		this.oldRenderQueue = [];
 		this.enqueuedImages = [];
 		this.collisionDetector = null;
+		this.useSolids = false;
 
 		 /*
 		 * Initializes the object
@@ -44,6 +48,7 @@
 				throw "This browser doesn't support canvas";
 			}
 
+			this.colorPicker = new ColorPicker(this.context);
 			this.collisionDetector = new CollisionDetector();
 		};
 
@@ -53,9 +58,10 @@
 		 *
 		 * @return void.
 		 */
-		this.main = function() {
+		this.main = function(paintSolid) {
 			// Running pre frame render callbacks.
 			this.fireCallbacks('preFrameRender', this.currentRenderFrame);
+
 
 			// Check if we should clear the context
 			if(this.renderQueue.length > 0) {
@@ -66,7 +72,11 @@
 			 // Render out the queue
 			for(var i = 0; i < this.renderQueue.length; i++) {
 				if(!this.renderQueue[i].image) continue; 
-				this.context.drawImage(this.renderQueue[i].image, this.renderQueue[i].x, this.renderQueue[i].y);
+				this.context.drawImage(
+					(!this.useSolids ? this.renderQueue[i].image : this.renderQueue[i].solid), 
+					this.renderQueue[i].x, 
+					this.renderQueue[i].y
+				);
 			}
 
 			// Generate a new frame id
@@ -83,6 +93,7 @@
 
 			// Running post frame render callbacks.
 			this.fireCallbacks('finishedFrame', this.currentRenderFrame);
+
 		};
 
 		/*
@@ -119,6 +130,7 @@
 		 * @return void.
 		 */
 		this.resetRenderQueue = function() {
+			this.oldRenderQueue = this.renderQueue;
 			this.renderQueue.length = 0;
 		};
 
@@ -151,6 +163,7 @@
 		 *
 		 * @param id (string) A unique identifier for the item
 		 * @param image (Object) The item which we wish to render out
+		 * @param solid (Object) The item which we wish to render out as a solid
 		 * @param x (Int) The x position
 		 * @param y (Int) The y position
 		 * @param z (Int) (optional) The z position, on what collision layer
@@ -159,7 +172,7 @@
 		 *
 		 * @return void.
 		 */
-        this.addToQueue = function(id, image, x, y, z, pixelMap, collisionCallback) {
+        this.addToQueue = function(id, image, solid, x, y, z, pixelMap, collisionCallback) {
 
 			// Set optional flags
 			var z = z || 0;
@@ -176,7 +189,8 @@
 					z: z,
 					pixelMap: pixelMap,
 					collisionCallback: collisionCallback,
-					image: image
+					image: image,
+					solid: solid
 				});
 				this.enqueuedImages[id] = this.renderQueue.length-1;
 			} else {
@@ -187,7 +201,8 @@
 					z: z,
 					pixelMap: pixelMap,
 					collisionCallback: collisionCallback,
-					image: image
+					image: image,
+					solid: solid
 				};                        
 			}
         };
@@ -279,6 +294,16 @@
 			return this.collisionDetector;
 		};
 
+		this.mouseDown = function(x,y) {
+			this.useSolids = true;
+			//console.log(this);
+			console.log(this.colorPicker.pickColor(x,y));
+		}
+		this.mouseUp = function(x,y) {
+			this.useSolids = false;
+		}
+
+
 		this.initialize(canvas);
 
 		return {
@@ -286,7 +311,10 @@
 			stop: this.stop.bind(this),
 			addToQueue: this.addToQueue.bind(this),
 			registerCallback: this.registerCallback.bind(this),
-			getCollisionDetector: this.getCollisionDetector.bind(this)
+			getCollisionDetector: this.getCollisionDetector.bind(this),
+			mouseDown: this.mouseDown.bind(this),
+			mouseUp: this.mouseUp.bind(this),
+			createSolid: this.colorPicker.createSolid.bind(this.colorPicker),
 		};
 	}
 })(namespace('CollisionDetection.Render'), jQuery);

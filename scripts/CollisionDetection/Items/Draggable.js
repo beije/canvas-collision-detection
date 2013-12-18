@@ -6,11 +6,11 @@
 	App.Draggable = function() {
 		this.isDragging = false;
 		this.initialize = function(painter) {
-			console.log('Draggable init');
+			console.log('Draggable init', this);
 
 			// Because the context is set from another object
 			// we need to find the parent below (Renderable).
-			this.__proto__.__proto__.initialize(painter);
+			this.__proto__.__proto__.initialize.call(this,painter);
 		}
 
 		this.updatePosition = function(x,y) {

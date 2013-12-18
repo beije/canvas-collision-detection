@@ -7,7 +7,15 @@
 		this.canvas = null;
 		this.context = null;
 		this.id = parseInt(Math.random()*100000);
-		this.rendered = null;
+		this.solid = null;
+		this.ready = false;
+		this.solidColors = {
+			r: 255,//parseInt(Math.random()*255),
+			g: 0,//parseInt(Math.random()*255),
+			b: 0,//parseInt(Math.random()*255),
+			a: 255//parseInt(Math.random()*255)
+
+		};
 		this.size = {
 			width: 0,
 			height: 0
@@ -23,7 +31,7 @@
          * @return void.
          */
 		this.initialize = function(painter) {
-			console.log('Renderable init');
+			console.log('Renderable init', this);
 			this.painter = painter;
 			this.collisionDetector = this.painter.getCollisionDetector();
  			
@@ -39,6 +47,7 @@
          * @return void.
          */
 		this.setupEvents = function() {
+			console.log(this)
 			this.painter.registerCallback(this.id, this.animateCallback.bind(this));
 		};
 
@@ -49,6 +58,7 @@
          */
 		this.loadExternalImage = function(imageUrl) {
 			this.imageObj = new Image();
+			console.log(this);
 			this.imageObj.onload = this.onloadOfExternalImage.bind(this)
 			this.imageObj.src = imageUrl;
 		};
@@ -59,6 +69,7 @@
          * @return void.
          */
 		this.onloadOfExternalImage = function() {
+			console.log('ready', this.ready);
 			this.context.drawImage(this.imageObj,0,0);
 
 			this.size = {
@@ -67,7 +78,8 @@
 			};
 
 			this.pixelMap = this.collisionDetector.buildPixelMap(this.canvas);
-			this.rendered = this.canvas;
+			this.ready = true;
+			console.log('ready', this.ready);
 		};
 
 		/*
@@ -80,6 +92,22 @@
 		 *
 		 */        
 		this.animateCallback = function(id) {
+			if(!this.ready) {
+				//console.log('not ready', this);
+				return;
+			} 
+
+			if(this.solid == null) {
+				console.log(this.solidColors);
+				this.solid = this.painter.createSolid(
+					this.canvas,
+					this.solidColors['r'],
+					this.solidColors['g'],
+					this.solidColors['b'],
+					this.solidColors['a']
+				);
+			}
+
 			var pixelMap = {
 				pixelMap: this.pixelMap,
 				width: this.size.width,
@@ -91,6 +119,7 @@
 			this.painter.addToQueue( 
 				this.id,                  // id
 				this.canvas,            // Image
+				this.solid,            // Image as solid
 				this.position.x,  // x position
 				this.position.y,  // y position
 				1,                        // z layer (or collision layer)
