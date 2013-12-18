@@ -277,4 +277,4 @@
 			registerCallback: this.registerCallback.bind(this)
 		};
 	}
-})(namespace('CollisionDetection.Handlers'), jQuery);
+})(namespace('CollisionDetection.Render'), jQuery);
