@@ -6,7 +6,9 @@
 	App.Player = function(painter) {
 		this.initialize = function(painter) {
 			console.log('Player init');
-			this.__proto__.initialize(painter);
+			this.setupDraggable();
+			this.setupRenderable(painter);
+			this.loadExternalImage('assets/star.png');
 			console.log(this);
 		}
 		this.initialize(painter);

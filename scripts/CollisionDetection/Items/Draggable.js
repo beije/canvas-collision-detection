@@ -4,9 +4,8 @@
 	var Renderable = namespace('CollisionDetection.Render.Renderable');
 
 	App.Draggable = function() {
-		this.initialize = function(painter) {
+		this.setupDraggable = function() {
 			console.log('Draggable init');
-			this.__proto__.initialize(painter);
 		}
 	};
 
