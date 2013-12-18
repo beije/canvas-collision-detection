@@ -1,4 +1,6 @@
 (function(App, $){
+	"use strict";
+	
 	App.Core = function() {
 		this.painter = null;
 		this.initialize = function(){

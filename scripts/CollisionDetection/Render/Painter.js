@@ -1,4 +1,6 @@
 (function(App, $){
+	"use strict";
+	
 	// Get our prefixed cancelAnimationFrame function
 	var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame ||
 	                           window.webkitCancelAnimationFrame || window.msCancelAnimationFrame;
