@@ -7,8 +7,9 @@
 			this.expandCanvas();
 			this.painter = new App.Render.Painter('#main-canvas');
 			this.mouseHandler = new App.Handlers.MouseHandler('#main-canvas');
-			this.player = new App.Items.Player(this.painter, this.mouseHandler);
 			this.mouseHandler.addDownCallback('ObjectPicking', this.painter.mouseDown.bind(this.painter));
+			this.star = new App.Items.Star(this.painter, this.mouseHandler);
+			this.star2 = new App.Items.Star(this.painter, this.mouseHandler);
 			this.painter.start();
 		}
 

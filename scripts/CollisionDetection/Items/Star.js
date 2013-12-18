@@ -4,7 +4,7 @@
 	var Renderable = namespace('CollisionDetection.Render.Renderable');
 	var Draggable = namespace('CollisionDetection.Items.Draggable');
 
-	App.Player = function(painter, mouseHandler) {
+	App.Star = function(painter, mouseHandler) {
 		this.initialize = function(painter, mouseHandler) {
 			this.unpackInhertiance();
 			this.loadExternalImage('assets/star.png');
