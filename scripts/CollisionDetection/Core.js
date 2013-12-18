@@ -1,6 +1,6 @@
-(function(CD, $){
+(function(App, $){
 	
-	CD.Core = function() {
+	App.Core = function() {
 		this.initialize = function(){
 			console.log('App init');
 		}
