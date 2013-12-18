@@ -14,6 +14,7 @@
 		this.currentRenderFrame = 0;
 		this.finishedFrameCallbacks = [];
 		this.preFrameCallbacks = [];
+		this.renderQueue = [];
 
 		 /*
 		 * Initializes the object
@@ -23,10 +24,12 @@
 		 */
 		this.initialize = function(canvas) {
 			this.canvasSelector = canvas;
+
 			var canvas = $(canvas);
 			if(canvas.length == 0) {
 				throw "No canvas detected."
 			}
+
 			this.canvas = canvas[0];
 
 			if(this.canvas && this.canvas.getContext && this.canvas.getContext('2d')) {
@@ -35,7 +38,11 @@
 				throw "This browser doesn't support canvas";
 			}
 
-			
+			this.registerCallback(
+				'emptyRenderQueue',
+				this.resetRenderQueue.bind(this),
+				'finishedFrame'
+			);
 		};
 
 		/*
@@ -49,7 +56,7 @@
 			this.fireCallbacks('preFrameRender', this.currentRenderFrame);
 
 			// Check if we should clear the context
-			if( this.renderQueue.length > 0 ) {
+			if(this.renderQueue.length > 0) {
 				this.clearcontext();
 				this.renderQueue.sort( this.orderByZindex );
 			}
@@ -100,6 +107,15 @@
 					this.raf = null;
 				}
 			}
+		};
+
+		/*
+		 * Resets the render queue.
+		 *
+		 * @return void.
+		 */
+		this.resetRenderQueue = function() {
+			this.renderQueue.length = 0;
 		};
 
 		/*
@@ -181,29 +197,29 @@
 		 * @return void.
 		 */
 		this.fireCallbacks = function(type, args) {
-			var callbacks = array();
+			var callbacks = [];
 
-        	if(!type || type = '') {
-        		throw "Invalid callback type.";
-        	}
+			if(!type || type == '') {
+				throw "Invalid callback type.";
+			}
 
-        	if(!args) {
-        		args = [];
-        	}
+			if(!args) {
+				args = [];
+			}
 
-        	switch(type) {
+			switch(type) {
 				case 'finishedFrame':
 					callbacks = this.finishedFrameCallbacks;
 				break;
 				case 'preFrameRender':
 					callbacks = this.preFrameCallbacks;
 				break;
-        	}
+			}
 
-        	for(var i = 0; i < callbacks.length; i++) {
-        		callbacks[i](args);
-        	}
-        }
+			for(var i = 0; i < callbacks.length; i++) {
+				callbacks[i].callback(args);
+			}
+		}
 
 		/*
 		 * Registers a callback for specific event type
@@ -255,7 +271,8 @@
 		return {
 			start: this.start.bind(this),
 			stop: this.stop.bind(this),
-			addToQueue: this.addToQueue.bind(this)
+			addToQueue: this.addToQueue.bind(this),
+			registerCallback: this.registerCallback.bind(this)
 		};
 	}
 })(namespace('CollisionDetection.Handlers'), jQuery);
