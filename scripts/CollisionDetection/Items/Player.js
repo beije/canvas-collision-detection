@@ -13,7 +13,9 @@
 		}
 		this.initialize(painter);
 
-		return {};
+		return {
+			updatePosition: this.updatePosition.bind(this)
+		};
 	};
 	App.Player.prototype = new Draggable();
 })(namespace('CollisionDetection.Items'), jQuery);
