@@ -5,7 +5,7 @@
 		this.painter = null;
 		this.initialize = function(){
 			this.painter = new App.Handlers.Painter('#main-canvas');
-			console.log('App init');
+			this.player = new App.Items.Player(this.painter);
 		}
 		
 		this.initialize();
