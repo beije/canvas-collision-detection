@@ -94,30 +94,41 @@
 		 */
 		this.pixelHitTest = function(source, target) {
 
-	            var top = parseInt(Math.max(source.y, target.y));
-	            var bottom = parseInt(Math.min(source.y+source.height, target.y+target.height));
-	            var left = parseInt(Math.max(source.x, target.x));
-	            var right = parseInt(Math.min(source.x+source.width, target.x+target.width));
+            var top = parseInt(Math.max(source.y, target.y));
+            var bottom = parseInt(Math.min(source.y+source.height, target.y+target.height));
+            var left = parseInt(Math.max(source.x, target.x));
+            var right = parseInt(Math.min(source.x+source.width, target.x+target.width));
+            var failed = false;
 
-	            for (var y = top; y < bottom; y++)
-	            {
-	                for (var x = left; x < right; x++)
-	                {
-	                	var pixel1 = source.pixelMap.data[ (x - source.x) +"_"+ (y - source.y) ];
-	                	var pixel2 = target.pixelMap.data[ (x - target.x) +"_"+ (y - target.y) ];
+            for (var y = top; y < bottom; y++) {
+                for (var x = left; x < right; x++) {
+                	var pixel1 = source.pixelMap.data[ (x - source.x) +"_"+ (y - source.y) ];
+                	var pixel2 = target.pixelMap.data[ (x - target.x) +"_"+ (y - target.y) ];
 
-	                	if(!pixel1 || !pixel2) {
-	                		continue;
-	                	};
-	                	
-	                    if (pixel1.pixelData[3] == 255 && pixel2.pixelData[3] == 255)
-	                    {
-	                        return true;
-	                    }
-	                }
-	            }
+                	if(!pixel1 || !pixel2) {
+                		continue;
+                	};
+                	
+                    if (pixel1.pixelData[3] == 255 && pixel2.pixelData[3] == 255) {
+                    	
+			            var canvas = document.getElementById('main-canvas');
+			            var context = canvas.getContext("2d");
+						var imageData = context.createImageData(1, 1);
+						var color = [255,0,0,255];
+						imageData.data.set(color);
+						context.putImageData(imageData,(x),(y));
 
-	            return false;
+
+                        failed = true;
+                    }
+                }
+            }
+
+            if(failed){
+            	return true;
+            }
+
+            return false;
 		}
 
 		/*
@@ -138,7 +149,7 @@
 
 			for(var y = 0; y < source.height; y++) {
 				for(var x = 0; x < source.width; x++) {
-					var dataRowColOffset = y+"_"+x;
+					var dataRowColOffset = x+"_"+y;
 					var pixel = ctx.getImageData(x,y,resolution,resolution);
 					var pixelData = pixel.data;
 

@@ -72,6 +72,86 @@
 			// Render out the queue
 			this.renderOutObjects(this.renderQueue, false);
 
+
+
+
+
+
+
+
+
+
+ // Collision detection
+                // Loop through the render-que
+                for( var i = 0; i < this.renderQueue.length; i++ ) {
+                        // Check that the image exists
+                        if( !this.renderQueue[i].image ) continue;
+
+                        // No use using this item as source if doesn't have
+                        // a callback.
+                        if( !this.renderQueue[i].collisionCallback ) continue; 
+
+                        var item = this.renderQueue[i];
+
+                        // Check that we have a pixelmap
+                        if( item.pixelMap != null ) {
+
+                                // Go through the queue again
+                                for( var n = 0; n < this.renderQueue.length; n++ ) {
+
+                                        // Check that we're not going against the
+                                        // same item
+                                        if( i === n ) continue;
+
+                                        // Check that we're on the same z-layer
+                                        if( this.renderQueue[n].pixelMap != null && this.renderQueue[n].z == item.z ) {
+
+                                                // Detect collision
+                                                if( this.collisionDetector.hitTest(item.pixelMap, this.renderQueue[n].pixelMap)) {
+                                                        // Fire the collision callback after the function
+                                                        // is done with setTimeout.
+                                                        if( item.collisionCallback != false ) {
+                                                                setTimeout( item.collisionCallback, 0 );
+                                                        }
+                                                        if( this.renderQueue[n].collisionCallback != false ) {
+                                                                setTimeout( this.renderQueue[n].collisionCallback, 0 );
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			// Generate a new frame id
 			this.currentRenderFrame = parseInt(Math.random()*1000);
 

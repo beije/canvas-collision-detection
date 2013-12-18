@@ -21,8 +21,8 @@
 			height: 0
 		};
 		this.position = {
-			x: Math.random()*200,
-			y: Math.random()*200
+			x: parseInt(Math.random()*200),
+			y: parseInt(Math.random()*200)
 		};
 
 		/*
@@ -122,8 +122,13 @@
 				this.position.x,  // x position
 				this.position.y,  // y position
 				1,                        // z layer (or collision layer)
-				pixelMap                  // Pixel data (for collision detection)
+				pixelMap,                  // Pixel data (for collision detection)
+				this.collisionDetection.bind(this)
 			);
 		};
+
+		this.collisionDetection = function() {
+			console.log('collide');
+		}
 	}
 })(namespace('CollisionDetection.Render'), jQuery);
