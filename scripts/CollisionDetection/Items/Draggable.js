@@ -1,7 +1,5 @@
 (function(App, $){
 	"use strict";
-	
-	var Renderable = namespace('CollisionDetection.Render.Renderable');
 
 	App.Draggable = function() {
 		this.isDragging = false;
@@ -10,13 +8,9 @@
 			x: 0,
 			y: 0
 		}
-		this.initialize = function(painter, mouseHandler) {
+		this.initializeDraggable = function(painter, mouseHandler) {
 			console.log('Draggable init', this);
 			this.mouseHandler = mouseHandler;
-			// Because the context is set from another object
-			// we need to find the parent below (Renderable).
-			this.__proto__.__proto__.initialize.call(this,painter);
-
 			this.setupDragEvents();
 		}
 		this.setupDragEvents = function() {
@@ -54,7 +48,5 @@
 			this.position.y = y - this.offsets.y;
 		}
 	};
-
-	App.Draggable.prototype = new Renderable();
 
 })(namespace('CollisionDetection.Items'), jQuery);

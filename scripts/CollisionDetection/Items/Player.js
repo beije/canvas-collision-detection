@@ -1,21 +1,26 @@
 (function(App, $){
 	"use strict";
 
+	var Renderable = namespace('CollisionDetection.Render.Renderable');
 	var Draggable = namespace('CollisionDetection.Items.Draggable');
 
 	App.Player = function(painter, mouseHandler) {
 		this.initialize = function(painter, mouseHandler) {
-			console.log('Player init', painter, mouseHandler);
-			// Initialize parent (Draggable).
-			this.__proto__.initialize.call(this, painter, mouseHandler);
+			this.unpackInhertiance();
 			this.loadExternalImage('assets/star.png');
-			console.log(this);
 		}
+
+		this.unpackInhertiance = function() {
+			Renderable.apply(this);
+			Draggable.apply(this);
+			this.initializeRenderer(painter);
+			this.initializeDraggable( painter, mouseHandler);
+		}
+
 		this.initialize(painter, mouseHandler);
 
 		return {
 			updatePosition: this.updatePosition.bind(this)
 		};
 	};
-	App.Player.prototype = new Draggable();
 })(namespace('CollisionDetection.Items'), jQuery);

@@ -21,8 +21,8 @@
 			height: 0
 		};
 		this.position = {
-			x: 0,
-			y: 0
+			x: Math.random()*200,
+			y: Math.random()*200
 		};
 
 		/*
@@ -30,7 +30,7 @@
          *
          * @return void.
          */
-		this.initialize = function(painter) {
+		this.initializeRenderer = function(painter) {
 			console.log('Renderable init', this);
 			this.painter = painter;
 			this.collisionDetector = this.painter.getCollisionDetector();
