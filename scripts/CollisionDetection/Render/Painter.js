@@ -1,6 +1,8 @@
 (function(App, $){
 	"use strict";
 	
+	var CollisionDetector = namespace('CollisionDetection.Handlers.CollisionDetector')
+
 	// Get our prefixed cancelAnimationFrame function
 	var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame ||
 	                           window.webkitCancelAnimationFrame || window.msCancelAnimationFrame;
@@ -17,6 +19,7 @@
 		this.finishedFrameCallbacks = [];
 		this.preFrameCallbacks = [];
 		this.renderQueue = [];
+		this.collisionDetector = null;
 
 		 /*
 		 * Initializes the object
@@ -45,6 +48,8 @@
 				this.resetRenderQueue.bind(this),
 				'finishedFrame'
 			);
+
+			this.collisionDetector = new CollisionDetector();
 		};
 
 		/*
@@ -268,13 +273,23 @@
 			return false;
 		};
 
+		/*
+		 * Returns the initialized CollisionDetector.
+		 *
+		 * @return CollisionDetection.Handlers.CollisionDetector
+		 */
+		this.getCollisionDetector = function() {
+			return this.collisionDetector;
+		};
+
 		this.initialize(canvas);
 
 		return {
 			start: this.start.bind(this),
 			stop: this.stop.bind(this),
 			addToQueue: this.addToQueue.bind(this),
-			registerCallback: this.registerCallback.bind(this)
+			registerCallback: this.registerCallback.bind(this),
+			getCollisionDetector: this.getCollisionDetector.bind(this)
 		};
 	}
 })(namespace('CollisionDetection.Render'), jQuery);
