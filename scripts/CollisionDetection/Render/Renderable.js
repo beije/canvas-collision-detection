@@ -10,10 +10,10 @@
 		this.solid = null;
 		this.ready = false;
 		this.solidColors = {
-			r: 255,//parseInt(Math.random()*255),
-			g: 0,//parseInt(Math.random()*255),
-			b: 0,//parseInt(Math.random()*255),
-			a: 255//parseInt(Math.random()*255)
+			r: parseInt(Math.random()*255),
+			g: parseInt(Math.random()*255),
+			b: parseInt(Math.random()*255),
+			a: 255 // Opacity must be full
 
 		};
 		this.size = {
@@ -38,7 +38,7 @@
  			this.canvas = document.createElement('canvas');
 			this.context = this.canvas.getContext('2d');
 
-			this.setupEvents();
+			this.setupRenderEvents();
 		}
 
 		/*
@@ -46,8 +46,7 @@
          *
          * @return void.
          */
-		this.setupEvents = function() {
-			console.log(this)
+		this.setupRenderEvents = function() {
 			this.painter.registerCallback(this.id, this.animateCallback.bind(this));
 		};
 

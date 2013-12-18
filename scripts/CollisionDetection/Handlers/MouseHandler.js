@@ -5,8 +5,13 @@
 		this.positionCallbacks = {};
 		this.downCallbacks = {};
 		this.upCallbacks = {};
+		this.positions = {
+			x: 0,
+			y: 0
+		};
 		this.initialize = function(elementSelector) {
 			this.element = $(elementSelector);
+			this.addPositionCallback('internalPositionRegister', this.registerCurrentPosition.bind(this));
 			this.setupEvents();
 		};
 		this.setupEvents = function() {
@@ -28,11 +33,9 @@
 		};
 		this.handleDown = function(e) {
 			this.updateDown(e.offsetX, e.offsetY);
-			console.log('Down', e);
 		};
 		this.handleUp = function(e) {
 			this.updateUp(e.offsetX, e.offsetY);
-			console.log('Up', e);
 		};
 		this.updatePositions = function(x,y) {
 			for(var i in this.positionCallbacks) {
@@ -82,11 +85,24 @@
 
 			this.upCallbacks[id] = callback;
 		}
+
+		this.registerCurrentPosition = function(x,y) {
+			this.positions = {
+				x: x,
+				y: y
+			};
+		}
+
+		this.getCurrentPosition = function() {
+			return this.positions;
+		}
+
 		this.initialize(elementSelector);
 		return {
 			addPositionCallback: this.addPositionCallback.bind(this),
 			addDownCallback: this.addDownCallback.bind(this),
-			addUpCallback: this.addUpCallback.bind(this)
+			addUpCallback: this.addUpCallback.bind(this),
+			getCurrentPosition: this.getCurrentPosition.bind(this)
 		};
 	}
 })(namespace('CollisionDetection.Handlers'), jQuery);

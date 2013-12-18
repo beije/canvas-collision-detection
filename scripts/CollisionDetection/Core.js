@@ -7,10 +7,8 @@
 			this.expandCanvas();
 			this.painter = new App.Render.Painter('#main-canvas');
 			this.mouseHandler = new App.Handlers.MouseHandler('#main-canvas');
-			this.player = new App.Items.Player(this.painter);
-			this.mouseHandler.addPositionCallback('player', this.player.updatePosition.bind(this.player));
+			this.player = new App.Items.Player(this.painter, this.mouseHandler);
 			this.mouseHandler.addDownCallback('ObjectPicking', this.painter.mouseDown.bind(this.painter));
-			this.mouseHandler.addUpCallback('ObjectPicking2', this.painter.mouseUp.bind(this.painter));
 			this.painter.start();
 		}
 

@@ -20,11 +20,11 @@
 		this.currentRenderFrame = 0;
 		this.finishedFrameCallbacks = [];
 		this.preFrameCallbacks = [];
+		this.colorDetectingCallbacks = [];
 		this.renderQueue = [];
 		this.oldRenderQueue = [];
 		this.enqueuedImages = [];
 		this.collisionDetector = null;
-		this.useSolids = false;
 
 		 /*
 		 * Initializes the object
@@ -66,18 +66,11 @@
 			// Check if we should clear the context
 			if(this.renderQueue.length > 0) {
 				this.clearcontext();
-				this.renderQueue.sort( this.orderByZindex );
+				this.renderQueue.sort(this.orderByZindex);
 			}
 
-			 // Render out the queue
-			for(var i = 0; i < this.renderQueue.length; i++) {
-				if(!this.renderQueue[i].image) continue; 
-				this.context.drawImage(
-					(!this.useSolids ? this.renderQueue[i].image : this.renderQueue[i].solid), 
-					this.renderQueue[i].x, 
-					this.renderQueue[i].y
-				);
-			}
+			// Render out the queue
+			this.renderOutObjects(this.renderQueue, false);
 
 			// Generate a new frame id
 			this.currentRenderFrame = parseInt(Math.random()*1000);
@@ -95,6 +88,25 @@
 			this.fireCallbacks('finishedFrame', this.currentRenderFrame);
 
 		};
+
+		/*
+		 * Renders out objects to the canvas.
+		 *
+		 * @param array renderObjects The objects that should be rendered out.
+		 * @param boolean useSolids If we should render out the solid versions.
+		 * @return void.
+		 */
+		this.renderOutObjects = function(renderObjects, useSolids) {
+			 // Render out the queue
+			for(var i = 0; i < renderObjects.length; i++) {
+				if(!renderObjects[i].image) continue; 
+				this.context.drawImage(
+					(!useSolids ? renderObjects[i].image : renderObjects[i].solid), 
+					renderObjects[i].x, 
+					renderObjects[i].y
+				);
+			}
+		}
 
 		/*
 		 * Starts the painter rendering
@@ -233,6 +245,9 @@
 				case 'preFrameRender':
 					callbacks = this.preFrameCallbacks;
 				break;
+				case 'colorDetecting':
+					callbacks = this.colorDetectingCallbacks;
+				break;
 			}
 
 			for(var i = 0; i < callbacks.length; i++) {
@@ -280,6 +295,14 @@
 
 					return true;
 				break;
+				case 'colorDetecting':
+					this.colorDetectingCallbacks.push({
+						id: id,
+						callback: callback
+					});
+
+					return true;
+				break;
 			};
 
 			return false;
@@ -294,15 +317,22 @@
 			return this.collisionDetector;
 		};
 
+		/*
+		 * Renders out the solid versions of all items 
+		 * on mousedown event.
+		 *
+		 * @return void.
+		 */
 		this.mouseDown = function(x,y) {
-			this.useSolids = true;
-			//console.log(this);
-			console.log(this.colorPicker.pickColor(x,y));
+			this.clearcontext();
+			this.renderOutObjects(this.oldRenderQueue, true);
+			var colorData = this.colorPicker.pickColor(x,y);
+			var color = colorData['r']+'-'+colorData['g']+'-'+colorData['b']+'-'+colorData['a'];
+			this.fireCallbacks('colorDetecting', color);
+			console.log(color, colorData);
+			this.clearcontext();
+			this.renderOutObjects(this.oldRenderQueue);
 		}
-		this.mouseUp = function(x,y) {
-			this.useSolids = false;
-		}
-
 
 		this.initialize(canvas);
 
@@ -313,8 +343,7 @@
 			registerCallback: this.registerCallback.bind(this),
 			getCollisionDetector: this.getCollisionDetector.bind(this),
 			mouseDown: this.mouseDown.bind(this),
-			mouseUp: this.mouseUp.bind(this),
-			createSolid: this.colorPicker.createSolid.bind(this.colorPicker),
+			createSolid: this.colorPicker.createSolid.bind(this.colorPicker)
 		};
 	}
 })(namespace('CollisionDetection.Render'), jQuery);
