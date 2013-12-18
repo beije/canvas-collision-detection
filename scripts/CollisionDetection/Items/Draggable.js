@@ -4,8 +4,12 @@
 	var Renderable = namespace('CollisionDetection.Render.Renderable');
 
 	App.Draggable = function() {
-		this.setupDraggable = function() {
+		this.initialize = function(painter) {
 			console.log('Draggable init');
+
+			// Because the context is set from another object
+			// we need to find the parent below (Renderable).
+			this.__proto__.__proto__.initialize(painter);
 		}
 	};
 

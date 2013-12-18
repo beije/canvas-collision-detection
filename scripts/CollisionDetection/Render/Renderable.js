@@ -22,7 +22,7 @@
          *
          * @return void.
          */
-		this.setupRenderable = function(painter) {
+		this.initialize = function(painter) {
 			console.log('Renderable init');
 			this.painter = painter;
 			this.collisionDetector = this.painter.getCollisionDetector();

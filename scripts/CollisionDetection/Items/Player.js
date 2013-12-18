@@ -6,8 +6,8 @@
 	App.Player = function(painter) {
 		this.initialize = function(painter) {
 			console.log('Player init');
-			this.setupDraggable();
-			this.setupRenderable(painter);
+			// Initialize parent (Draggable).
+			this.__proto__.initialize.call(this, painter);
 			this.loadExternalImage('assets/star.png');
 			console.log(this);
 		}
