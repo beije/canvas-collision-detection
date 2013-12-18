@@ -19,6 +19,7 @@
 		this.finishedFrameCallbacks = [];
 		this.preFrameCallbacks = [];
 		this.renderQueue = [];
+		this.enqueuedImages = [];
 		this.collisionDetector = null;
 
 		 /*
@@ -42,12 +43,6 @@
 			} else {
 				throw "This browser doesn't support canvas";
 			}
-
-			this.registerCallback(
-				'emptyRenderQueue',
-				this.resetRenderQueue.bind(this),
-				'finishedFrame'
-			);
 
 			this.collisionDetector = new CollisionDetector();
 		};
@@ -83,6 +78,8 @@
 			} else {
 				this.raf = setTimeout(this.main.bind(this), 20)
 			}
+
+			this.resetRenderQueue();
 
 			// Running post frame render callbacks.
 			this.fireCallbacks('finishedFrame', this.currentRenderFrame);
