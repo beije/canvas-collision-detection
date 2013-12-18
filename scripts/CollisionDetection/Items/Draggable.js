@@ -21,8 +21,6 @@
 
 		this.checkColor = function(color) {
 			var thisColor = this.solidColors['r']+'-'+this.solidColors['g']+'-'+this.solidColors['b']+'-'+this.solidColors['a'];
-			console.log(thisColor.toString());
-			console.log(color.toString());
 			if(thisColor == color) {
 				this.isDragging = true;
 				var mousePos = this.mouseHandler.getCurrentPosition();

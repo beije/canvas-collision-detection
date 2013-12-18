@@ -127,8 +127,6 @@
 			);
 		};
 
-		this.collisionDetection = function() {
-			console.log('collide');
-		}
+		this.collisionDetection = function() {}
 	}
 })(namespace('CollisionDetection.Render'), jQuery);
