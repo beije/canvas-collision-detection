@@ -117,8 +117,6 @@
 						var color = [255,0,0,255];
 						imageData.data.set(color);
 						context.putImageData(imageData,(x),(y));
-
-
                         failed = true;
                     }
                 }
