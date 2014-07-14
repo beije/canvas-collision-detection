@@ -26,6 +26,20 @@ function namespace(namespace) {
 	return object;
 }
 
+debugCounter = 0;
+
+function debug(msg) {
+	if(console && console.log) {
+		console.log(msg);
+	}
+
+	debugCounter++;
+
+	$('.console-window').html(
+		debugCounter + '. ' + msg + '<br/>' + $('.console-window').html()
+	);
+}
+
 /**
  * Adds bind polyfill.
  */
