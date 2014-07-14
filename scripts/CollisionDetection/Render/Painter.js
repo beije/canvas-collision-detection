@@ -104,6 +104,7 @@
                                                     if( item.collisionCallback != false ) {
                                                             setTimeout( item.collisionCallback, 0 );
                                                     }
+
                                                     if( this.renderQueue[n].collisionCallback != false ) {
                                                             setTimeout( this.renderQueue[n].collisionCallback, 0 );
                                                     }
