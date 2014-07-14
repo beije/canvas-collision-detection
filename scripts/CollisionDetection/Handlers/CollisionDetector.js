@@ -98,7 +98,6 @@
             var bottom = parseInt(Math.min(source.y+source.height, target.y+target.height));
             var left = parseInt(Math.max(source.x, target.x));
             var right = parseInt(Math.min(source.x+source.width, target.x+target.width));
-            var failed = false;
 
             for (var y = top; y < bottom; y++) {
                 for (var x = left; x < right; x++) {
@@ -117,13 +116,9 @@
 						var color = [255,0,0,255];
 						imageData.data.set(color);
 						context.putImageData(imageData,(x),(y));
-                        failed = true;
+                        return true;
                     }
                 }
-            }
-
-            if(failed){
-            	return true;
             }
 
             return false;
